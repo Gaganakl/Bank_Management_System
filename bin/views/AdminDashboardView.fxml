@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox spacing="20" alignment="CENTER" xmlns:fx="http://javafx.com/fxml" fx:controller="controllers.AdminController" stylesheets="/styles/styles.css">
+    <Label text="Admin Dashboard" styleClass="title"/>
+    <TableView fx:id="customerTable">
+        <columns>
+            <TableColumn fx:id="idColumn" text="ID" minWidth="50" maxWidth="100" />
+            <TableColumn fx:id="nameColumn" text="Name" minWidth="100" />
+            <TableColumn fx:id="emailColumn" text="Email" minWidth="200" />
+            <TableColumn fx:id="positionColumn" text="Position" minWidth="100" />
+        </columns>
+    </TableView>
+    <GridPane hgap="10" vgap="10">
+        <Label text="Name:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+        <TextField fx:id="nameField" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+        <Label text="Email:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+        <TextField fx:id="emailField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+        <Label text="Position:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+        <TextField fx:id="positionField" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+    </GridPane>
+    <HBox spacing="10">
+        <Button text="Add Customer" onAction="#handleAddCustomer"/>
+        <Button text="Update Customer" onAction="#handleUpdateCustomer"/>
+        <Button text="Delete Customer" onAction="#handleDeleteCustomer"/>
+    </HBox>
+</VBox>

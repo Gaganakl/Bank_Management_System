@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox spacing="20" alignment="CENTER" xmlns:fx="http://javafx.com/fxml" fx:controller="controllers.CustomerController" stylesheets="/styles/styles.css">
+    <Label text="Cutomer Dashboard" styleClass="title"/>
+    <GridPane hgap="10" vgap="10" styleClass="form">
+        <Label text="Name:" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+        <Label fx:id="customerNameLabel" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+        <Label text="Email:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+        <Label fx:id="customerEmailLabel" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+        <Label text="Position:" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+        <Label fx:id="customerPositionLabel" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+    </GridPane>
+    <Button text="Update Profile" onAction="#handleUpdateProfile"/>
+    <Button text="Change Password" onAction="#handleChangePassword"/>
+</VBox>
