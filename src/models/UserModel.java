@@ -1,13 +1,13 @@
 package models;
 
-public class User {
+public class UserModel {
     private int id;
     private String username;
     private String password;
     private String role;
     private int customerId; 
 
-    public User(int id, String username, String password, String role) {
+    public UserModel(int id, String username, String password, String role) {
         this.id = id;
         this.username = username;
         this.password = password;

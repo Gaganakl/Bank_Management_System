@@ -4,7 +4,7 @@ package controllers;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
-import models.Customer;
+import models.CustomerModel;
 
 public class UpdateCustomerController {
 
@@ -16,14 +16,14 @@ public class UpdateCustomerController {
     private TextField positionField;
 
     private Stage dialogStage;
-    private Customer customer;
+    private CustomerModel customer;
     private boolean updateClicked = false;
 
     public void setDialogStage(Stage dialogStage) {
         this.dialogStage = dialogStage;
     }
 
-    public void setCustomer(Customer customer) {
+    public void setCustomer(CustomerModel customer) {
         this.customer = customer;
         nameField.setText(customer.getName());
         emailField.setText(customer.getEmail());
@@ -34,7 +34,7 @@ public class UpdateCustomerController {
         return updateClicked;
     }
 
-    public Customer getUpdatedCustomer() {
+    public CustomerModel getUpdatedCustomer() {
         return customer;
     }
 

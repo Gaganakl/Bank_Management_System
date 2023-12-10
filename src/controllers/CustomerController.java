@@ -16,14 +16,14 @@ public class CustomerController {
     @FXML
     private Button updateProfileButton;
 
-    private Customer customer;
+    private CustomerModel customer;
     private Main main;
 
 //    public void initialize() {
 //        // Initialize any required data or UI elements
 //    }
 
-    public void setCustomer(Customer customer) {
+    public void setCustomer(CustomerModel customer) {
         this.customer = customer;
         updateCustomerInfo();
     }
@@ -46,7 +46,7 @@ public class CustomerController {
     @FXML
     private void handleUpdateProfile() {
         // Show a dialog to update the customer's profile
-        Customer updatedCustomer = main.showUpdateEmployeeDialog(customer);
+        CustomerModel updatedCustomer = main.showUpdateEmployeeDialog(customer);
         if (updatedCustomer != null) {
             customer = updatedCustomer;
             updateCustomerInfo();

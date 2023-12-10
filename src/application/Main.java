@@ -6,11 +6,11 @@ import javafx.scene.Scene;
 import javafx.scene.Parent;
 import javafx.stage.Stage;
 import javafx.stage.Modality;
-import models.Customer;
+import models.CustomerModel;
 import controllers.UpdateCustomerController;
 import controllers.UpdatePasswordController;
 import controllers.SignupController;
-import models.Dao;
+import models.DaoModel;
 import java.io.IOException;
 import controllers.CustomerController;
 import controllers.LoginController;
@@ -19,12 +19,12 @@ import javafx.scene.layout.VBox;
 public class Main extends Application {
 
     private Stage primaryStage;
-    private Dao dao; // Declare the Dao instance variable at the class level
+    private DaoModel dao; // Declare the Dao instance variable at the class level
 
     @Override
     public void start(Stage primaryStage) {
         this.primaryStage = primaryStage;
-        this.dao = new Dao(); // Initialize the Dao instance
+        this.dao = new DaoModel(); // Initialize the Dao instance
        
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/LoginView.fxml"));
@@ -43,7 +43,7 @@ public class Main extends Application {
         }
     }
     
-    public void showCustomerDashboard(Customer employee) {
+    public void showCustomerDashboard(CustomerModel employee) {
         try {
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(Main.class.getResource("/views/CustomerDashboardView.fxml"));
@@ -63,7 +63,7 @@ public class Main extends Application {
         }
     }
     
-    public Customer showUpdateEmployeeDialog(Customer employee) {
+    public CustomerModel showUpdateEmployeeDialog(CustomerModel employee) {
         try {
             // Load the FXML for the update employee dialog
             FXMLLoader loader = new FXMLLoader();
@@ -87,9 +87,9 @@ public class Main extends Application {
             dialogStage.showAndWait();
 
             if (controller.isUpdateClicked()) {
-                Customer updatedEmployee = controller.getUpdatedCustomer();
+                CustomerModel updatedEmployee = controller.getUpdatedCustomer();
                 // Call the updateEmployee method from Dao class
-                Dao dao = new Dao();
+                DaoModel dao = new DaoModel();
                 dao.updateCustomer(updatedEmployee);
                 return updatedEmployee;
             }
@@ -100,7 +100,7 @@ public class Main extends Application {
         return null;
     }
     
-    public boolean showUpdatePasswordDialog(Customer employee) {
+    public boolean showUpdatePasswordDialog(CustomerModel employee) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/UpdatePasswordView.fxml"));
             VBox page = (VBox) loader.load();

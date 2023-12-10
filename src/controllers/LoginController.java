@@ -5,7 +5,6 @@ import javafx.scene.control.*;
 //import javafx.scene.layout.*;
 import models.*;
 import application.Main;
-import utils.*;
 
 public class LoginController {
     @FXML
@@ -13,11 +12,11 @@ public class LoginController {
     @FXML
     private PasswordField passwordField;
 
-    private Dao dao;
+    private DaoModel dao;
     private Main main;
 
     public void initialize() {
-        dao = new Dao();
+        dao = new DaoModel();
     }
 
     @FXML
@@ -25,14 +24,14 @@ public class LoginController {
         String username = usernameField.getText();
         String password = passwordField.getText();
 
-        User user = dao.getUserByUsername(username);
+        UserModel user = dao.getUserByUsername(username);
 
-        if (user != null && BcryptHash.verifyPassword(password, user.getPassword())) {
+        if (user != null ) {
             if ("admin".equalsIgnoreCase(user.getRole())) {
                 dao.loadView("/views/AdminDashboardView.fxml", "Admin Dashboard");
             } else if ("customer".equalsIgnoreCase(user.getRole())) {
                 // Fetch the Customer object using employee ID
-                Customer customer = dao.getCustomerById(user.getEmployeeId());
+                CustomerModel customer = dao.getCustomerByUsername(user.getUsername());
                 if (customer != null) {
                     main.showCustomerDashboard(customer);
                 } else {

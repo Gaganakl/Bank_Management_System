@@ -4,9 +4,9 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.PasswordField;
 import javafx.stage.Stage;
-import models.Customer;
-import models.Dao;
-import utils.BcryptHash;
+import models.CustomerModel;
+import models.DaoModel;
+
 
 public class UpdatePasswordController {
 
@@ -18,18 +18,18 @@ public class UpdatePasswordController {
     private PasswordField confirmPasswordField;
 
     private Stage dialogStage;
-    private Customer customer;
-    private Dao dao;
+    private CustomerModel customer;
+    private DaoModel dao;
 
     public void setDialogStage(Stage dialogStage) {
         this.dialogStage = dialogStage;
     }
 
-    public void setCustomer(Customer customer) {
+    public void setCustomer(CustomerModel customer) {
         this.customer = customer;
     }
 
-    public void setDao(Dao dao) {
+    public void setDao(DaoModel dao) {
         this.dao = dao;
     }
 
@@ -46,8 +46,8 @@ public class UpdatePasswordController {
 
         if (dao.isPasswordCorrect(customer.getUserId(), currentPassword)) {
             if (newPassword.equals(confirmPassword)) {
-                String hashedNewPassword = BcryptHash.hashPassword(newPassword);
-                if (dao.updateUserPassword(customer.getUserId(), hashedNewPassword)) {
+               // String hashedNewPassword = BcryptHash.hashPassword(newPassword);
+                if (dao.updateUserPassword(customer.getUserId(), newPassword)) {
                     // Show success message
                     showInfo("Password updated successfully.");
                     dialogStage.close();

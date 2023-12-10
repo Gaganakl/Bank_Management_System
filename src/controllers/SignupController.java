@@ -2,10 +2,10 @@ package controllers;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import models.Admin;
-import models.Dao;
+import models.AdminModel;
+import models.DaoModel;
 import application.Main;
-import utils.BcryptHash;
+
 
 public class SignupController {
     @FXML
@@ -22,10 +22,10 @@ public class SignupController {
     private Label signupMessageLabel;
 
     private Main main;
-    private Dao dao;
+    private DaoModel dao;
 
     public SignupController() {
-        dao = new Dao();
+        dao = new DaoModel();
     }
 
     @FXML
@@ -42,10 +42,10 @@ public class SignupController {
         }
 
 //        String hashedPassword = BcryptHash.hashPassword(password);
-        int userId = dao.createUser(username, password, "admin");
+        int userId = dao.createUser(username, password, "customer");
 
         if (userId != -1) {
-        	Admin admin = new Admin(userId, name, email, position, userId);
+        	AdminModel admin = new AdminModel(userId, name, email, position, userId);
             if (dao.addCustomer(admin)) {
                 signupMessageLabel.setText("Admin account created successfully.");
             } else {

@@ -1,7 +1,7 @@
 package models;
 
-public class Admin extends Customer {
-    public Admin(int id, String name, String email, String position, int userId) {
+public class AdminModel extends CustomerModel {
+    public AdminModel(int id, String name, String email, String position, int userId) {
         super(id, name, email, position, userId);
     }
 

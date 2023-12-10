@@ -2,14 +2,14 @@ package models;
 
 import javafx.beans.property.*;
 
-public class Customer {
+public class CustomerModel {
     private IntegerProperty id;
     private StringProperty name;
     private StringProperty email;
     private StringProperty position;
     private IntegerProperty userId;
 
-    public Customer(int id, String name, String email, String position, int userId) {
+    public CustomerModel(int id, String name, String email, String position, int userId) {
         this.id = new SimpleIntegerProperty(id);
         this.name = new SimpleStringProperty(name);
         this.email = new SimpleStringProperty(email);

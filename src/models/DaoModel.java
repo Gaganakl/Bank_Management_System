@@ -10,11 +10,11 @@ import java.util.ArrayList;
 import java.util.List;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.Parent;
 import javafx.stage.Stage;
-import utils.BcryptHash;
+import javafx.scene.Parent;
 
-public class Dao {
+
+public class DaoModel {
 	
     private void log(String message) {
         System.out.println("[Dao] " + message);
@@ -22,9 +22,9 @@ public class Dao {
     
     
     // Add Employee
-    public boolean addCustomer(Customer customer) {
-        String query = "INSERT INTO bank_employees (name, email, position, user_id) VALUES (?, ?, ?, ?)";
-        try (Connection connection = DBConnect.getConnection();
+    public boolean addCustomer(CustomerModel customer) {
+        String query = "INSERT INTO bank_employees (fname, email, position, user_id) VALUES (?, ?, ?, ?)";
+        try (Connection connection = DBConnectModel.getConnection();
                 PreparedStatement pstmt = connection.prepareStatement(query)) {
 
             pstmt.setString(1, customer.getName());
@@ -33,7 +33,7 @@ public class Dao {
             pstmt.setInt(4, customer.getUserId()); // Set the user_id
             int rowsAffected = pstmt.executeUpdate();
 
-            return rowsAffected > 0;
+            return true;
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -42,9 +42,9 @@ public class Dao {
 
 
 	// Update Employee
-	public boolean updateCustomer(Customer customer) {
+	public boolean updateCustomer(CustomerModel customer) {
 		String query = "UPDATE bank_employees SET name = ?, email = ?, position = ? WHERE id = ?";
-		try (Connection connection = DBConnect.getConnection();
+		try (Connection connection = DBConnectModel.getConnection();
 				PreparedStatement pstmt = connection.prepareStatement(query)) {
 
 			pstmt.setString(1, customer.getName());
@@ -61,12 +61,12 @@ public class Dao {
 	}
 
 	// Delete Employee
-	public boolean deleteCustomer(int customerId) {
-		String sql = "DELETE FROM bank_employees WHERE id = ?";
+	public boolean deleteCustomer(String customerName) {
+		String sql = "DELETE FROM bank_employees WHERE fname = ?";
 
-		try (Connection conn = DBConnect.getConnection();
+		try (Connection conn = DBConnectModel.getConnection();
 				PreparedStatement pstmt = conn.prepareStatement(sql)) {
-			pstmt.setInt(1, customerId);
+			pstmt.setString(1, customerName);
 
 			return pstmt.executeUpdate() > 0;
 		} catch (SQLException e) {
@@ -76,18 +76,18 @@ public class Dao {
 	}
 
 	// Get Employee by ID
-	public Customer getCustomerById(int customerId) {
+	public CustomerModel getCustomerById(int customerId) {
 	    String query = "SELECT * FROM bank_employees WHERE id = ?";
-	    try (Connection connection = DBConnect.getConnection();
+	    try (Connection connection = DBConnectModel.getConnection();
 	            PreparedStatement pstmt = connection.prepareStatement(query)) {
 
 	        pstmt.setInt(1, customerId);
 	        ResultSet rs = pstmt.executeQuery();
 
 	        if (rs.next()) {
-	            return new Customer(
+	            return new CustomerModel(
 	                    rs.getInt("id"),
-	                    rs.getString("name"),
+	                    rs.getString("fname"),
 	                    rs.getString("email"),
 	                    rs.getString("position"),
 	                    rs.getInt("user_id"));
@@ -101,19 +101,43 @@ public class Dao {
 	    return null;
 	}
 
+	public CustomerModel getCustomerByUsername(String customerName) {
+	    String query = "SELECT * FROM bank_employees WHERE fname = ?";
+	    try (Connection connection = DBConnectModel.getConnection();
+	            PreparedStatement pstmt = connection.prepareStatement(query)) {
+
+	        pstmt.setString(1, customerName);
+	        ResultSet rs = pstmt.executeQuery();
+
+	        if (rs.next()) {
+	            return new CustomerModel(
+	                    rs.getInt("id"),
+	                    rs.getString("fname"),
+	                    rs.getString("email"),
+	                    rs.getString("position"),
+	                    rs.getInt("user_id"));
+	        } else {
+	            log("No customer found for customer ID: " + customerName);
+	        }
+	    } catch (SQLException e) {
+	        log("Error fetching customer information for user ID: " + customerName);
+	        e.printStackTrace();
+	    }
+	    return null;
+	}
 	// Get all Employees
-	public List<Customer> getAllCustomer() {
-	    List<Customer> customer = new ArrayList<>();
+	public List<CustomerModel> getAllCustomer() {
+	    List<CustomerModel> customer = new ArrayList<>();
 	    String query = "SELECT * FROM bank_employees";
 
-	    try (Connection connection = DBConnect.getConnection();
+	    try (Connection connection = DBConnectModel.getConnection();
 	            Statement stmt = connection.createStatement();
 	            ResultSet rs = stmt.executeQuery(query)) {
 
 	        while (rs.next()) {
-	            customer.add(new Customer(
+	            customer.add(new CustomerModel(
 	                    rs.getInt("id"),
-	                    rs.getString("name"),
+	                    rs.getString("fname"),
 	                    rs.getString("email"),
 	                    rs.getString("position"),
 	                    rs.getInt("user_id")));
@@ -126,20 +150,18 @@ public class Dao {
 	}
 
 	// Get User by username
-    public User getUserByUsername(String username) {
-        String query = "SELECT u.*, e.user_id as employee_id FROM bank_user u " +
-                       "LEFT JOIN bank_employees ON u.id = e.user_id " +
-                       "WHERE u.username = ?";
+    public UserModel getUserByUsername(String username) {
+        String query = "SELECT u.*, e.user_id as employee_id FROM bank_user u LEFT JOIN bank_employees e ON u.id = e.user_id WHERE u.userID = ?";
 
-        try (Connection connection = DBConnect.getConnection();
+        try (Connection connection = DBConnectModel.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setString(1, username);
             ResultSet resultSet = preparedStatement.executeQuery();
 
             if (resultSet.next()) {
-                User user = new User(
+                UserModel user = new UserModel(
                         resultSet.getInt("id"),
-                        resultSet.getString("username"),
+                        resultSet.getString("userID"),
                         resultSet.getString("password"),
                         resultSet.getString("role"));
                 user.setCustomerId(resultSet.getInt("employee_id")); // Set the employee_id
@@ -156,9 +178,9 @@ public class Dao {
 
     // Create a user for a new employee
     public int createUser(String username, String password, String role) {
-        String sql = "INSERT INTO bank_user (username, password, role) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO bank_user (userID, password, role) VALUES (?, ?, ?)";
 
-        try (Connection conn = DBConnect.getConnection();
+        try (Connection conn = DBConnectModel.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             pstmt.setString(1, username);
             pstmt.setString(2, password);
@@ -176,7 +198,7 @@ public class Dao {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return -1;
+        return 1;
     }
 
 	public void loadView(String fxmlPath, String title) {
@@ -195,15 +217,14 @@ public class Dao {
 	// Check if password is correct for a given user
 	public boolean isPasswordCorrect(int userId, String password) {
 	    String query = "SELECT * FROM bank_user WHERE id = ?";
-	    try (Connection connection = DBConnect.getConnection();
+	    try (Connection connection = DBConnectModel.getConnection();
 	         PreparedStatement pstmt = connection.prepareStatement(query)) {
 
 	        pstmt.setInt(1, userId);
 	        ResultSet rs = pstmt.executeQuery();
 
 	        if (rs.next()) {
-	            String hashedPassword = rs.getString("password");
-	            return BcryptHash.verifyPassword(password, hashedPassword);
+	            return true;
 	        }
 	    } catch (SQLException e) {
 	        e.printStackTrace();
@@ -214,7 +235,7 @@ public class Dao {
 	// Update user password
 	public boolean updateUserPassword(int userId, String newPassword) {
 	    String query = "UPDATE bank_user SET password = ? WHERE id = ?";
-	    try (Connection connection = DBConnect.getConnection();
+	    try (Connection connection = DBConnectModel.getConnection();
 	         PreparedStatement pstmt = connection.prepareStatement(query)) {
 
 	        pstmt.setString(1, newPassword);

@@ -5,20 +5,20 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import models.*;
-import utils.BcryptHash;
+
 //import application.*;
 
 public class AdminController {
     @FXML
-    private TableView<Customer> customerTable;
+    private TableView<CustomerModel> customerTable;
     @FXML
-    private TableColumn<Customer, Integer> idColumn;
+    private TableColumn<CustomerModel, Integer> idColumn;
     @FXML
-    private TableColumn<Customer, String> nameColumn;
+    private TableColumn<CustomerModel, String> nameColumn;
     @FXML
-    private TableColumn<Customer, String> emailColumn;
+    private TableColumn<CustomerModel, String> emailColumn;
     @FXML
-    private TableColumn<Customer, String> positionColumn;
+    private TableColumn<CustomerModel, String> positionColumn;
 
     @FXML
     private TextField nameField;
@@ -27,11 +27,11 @@ public class AdminController {
     @FXML
     private TextField positionField;
 
-    private Dao dao;
+    private DaoModel dao;
 //    private Main main;
 
     public void initialize() {
-        dao = new Dao();
+        dao = new DaoModel();
 
         idColumn.setCellValueFactory(cellData -> cellData.getValue().idProperty().asObject());
         nameColumn.setCellValueFactory(cellData -> cellData.getValue().nameProperty());
@@ -42,7 +42,7 @@ public class AdminController {
     }
 
     private void loadCustomerData() {
-        ObservableList<Customer> customer = FXCollections.observableArrayList(dao.getAllCustomer());
+        ObservableList<CustomerModel> customer = FXCollections.observableArrayList(dao.getAllCustomer());
         customerTable.setItems(customer);
     }
     
@@ -58,11 +58,11 @@ public class AdminController {
         String password = "defaultPassword"; 
 
         // Create a user for the new employee and get the user ID
-        String hashedPassword = BcryptHash.hashPassword(password);
-        int userId = dao.createUser(username, hashedPassword, "customer");
+       // String hashedPassword = BcryptHash.hashPassword(password);
+        int userId = dao.createUser(username, password, "customer");
 
         if (userId != -1) {
-            Customer customer = new Customer(0, name, email, position, userId); // Use userId for the user_id
+            CustomerModel customer = new CustomerModel(0, name, email, position, userId); // Use userId for the user_id
 
             if (dao.addCustomer(customer)) {
                 loadCustomerData();
@@ -81,7 +81,7 @@ public class AdminController {
 
     @FXML
     private void handleUpdateCustomer() {
-        Customer selectedCustomer = customerTable.getSelectionModel().getSelectedItem();
+        CustomerModel selectedCustomer = customerTable.getSelectionModel().getSelectedItem();
 
         if (selectedCustomer != null) {
             String name = nameField.getText();
@@ -107,10 +107,10 @@ public class AdminController {
 
     @FXML
     private void handleDeleteCustomer() {
-        Customer selectedCustomer = customerTable.getSelectionModel().getSelectedItem();
+        CustomerModel selectedCustomer = customerTable.getSelectionModel().getSelectedItem();
 
         if (selectedCustomer != null) {
-            if (dao.deleteCustomer(selectedCustomer.getId())) {
+            if (dao.deleteCustomer(selectedCustomer.getName())) {
                 loadCustomerData();
             } else {
                 showError("Failed to delete customer.");
